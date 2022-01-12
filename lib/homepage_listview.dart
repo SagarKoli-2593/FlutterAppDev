@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wordpair_generator/product_model.dart';
-import 'package:flutter/services.dart' as rootBundle;
+import 'package:http/http.dart' as http;
+import '';
 
 class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 class _MyHomePageState extends State<MyHomePage> {
+  static const String url = 'https://protocoderspoint.com/jsondata/productlist.json';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
         )
     );
   }
+
   Future<List<ProductDataModel>> ReadJsonData() async {
 
-    final jsondata = await rootBundle.rootBundle.loadString('jsonfile/product_json.json');
-    final list = json.decode(jsondata) as List<dynamic>;
+    var uri = Uri.parse(url);
+    final jsondata = await http.get(uri);
+    final list = json.decode(jsondata.body) as List<dynamic>;
     return list.map((e) => ProductDataModel.fromJson(e)).toList();
   }
 }
